@@ -65,7 +65,7 @@ const WordGame = () => {
     // Set up next round after a delay
     setTimeout(() => {
       setupNewRound();
-    }, 2500);
+    }, 1500);
   };
 
   // Function to replay audio
