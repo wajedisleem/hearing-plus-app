@@ -36,6 +36,7 @@ const WordGame = () => {
 
   // Handle image selection
   const handleImageClick = (selectedWord) => {
+    setReplayAvailable(false);
     const correct = selectedWord === targetWord;
     setIsCorrect(correct);
     setShowFeedback(true);
@@ -68,12 +69,12 @@ const WordGame = () => {
 
       {/* Game Grid */}
       <div className="flex justify-center">
-        <div className="grid grid-cols-2 gap-10 mb-8">
+        <div className="grid grid-cols-2 gap-5 md:gap-10 mb-8">
           {currentWords.map((word, index) => (
             <div
               key={index}
               onClick={() => handleImageClick(word)}
-              className={`relative aspect-square rounded-xl w-50 border-2 border-gray-200 p-3 cursor-pointer bg-white overflow-hidden transform transition-transform hover:scale-105 ${
+              className={`relative aspect-square rounded-xl max-w-50 border-2 border-gray-200 p-3 cursor-pointer bg-white overflow-hidden transform transition-transform hover:scale-105 ${
                 showFeedback && word === targetWord ? (isCorrect ? 'ring-4 ring-green-500' : 'ring-4 ring-red-500') : 'hover:ring-4 hover:ring-blue-500'
               }`}
               disabled={showFeedback}>
@@ -84,16 +85,11 @@ const WordGame = () => {
       </div>
       {/* Replay Button */}
       <div className="text-center">
-        <button 
-          onClick={replayAudio} 
+        <button
+          onClick={replayAudio}
           disabled={!replayAvailable}
-          className={`px-6 py-3 rounded-full text-xl font-semibold transition-colors ${
-            replayAvailable 
-              ? 'bg-blue-500 text-white hover:bg-blue-600' 
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          🔊 Listen Again ({replayAvailable ? '1' : '0'})
+          className={`px-6 py-3 rounded-full text-xl font-semibold transition-colors ${replayAvailable ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
+          🔊 Listen Again
         </button>
       </div>
 
