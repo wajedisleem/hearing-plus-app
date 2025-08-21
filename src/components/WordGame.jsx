@@ -108,7 +108,7 @@ const WordGame = () => {
         <button
           onClick={replayAudio}
           className='px-6 py-3 rounded-full text-xl font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600'>
-          🔊 Listen Again
+          🔊 Listen
         </button>
       </div>
 
