@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import words from '../data/words';
 
 const WordGame = () => {
@@ -8,6 +8,7 @@ const WordGame = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [replayAvailable, setReplayAvailable] = useState(true);
+  const [gameStarted, setGameStarted] = useState(false);
 
   // Function to get 4 random words
   const getRandomWords = useCallback(() => {
@@ -24,15 +25,31 @@ const WordGame = () => {
     setShowFeedback(false);
     setReplayAvailable(true); // Reset replay availability for new round
 
-    // Play audio automatically
-    const audio = new Audio(`audio/${randomTarget}.mp3`);
-    audio.play();
-  }, [getRandomWords]);
+    if (gameStarted) {
+      // Play audio only if game has started (user has interacted)
+      setTimeout(() => {
+        const audio = new Audio(`/audio/${randomTarget}.mp3`);
+        audio.play().catch((error) => console.log('Audio play failed:', error));
+      }, 500);
+    }
+  }, [getRandomWords, gameStarted]);
 
-  // Initialize game
-  useEffect(() => {
-    setupNewRound();
-  }, [setupNewRound]);
+  // Start game function
+  const startGame = () => {
+    const selectedWords = getRandomWords();
+    const randomTarget = selectedWords[Math.floor(Math.random() * selectedWords.length)];
+    setCurrentWords(selectedWords);
+    setTargetWord(randomTarget);
+    setShowFeedback(false);
+    setReplayAvailable(true);
+    setGameStarted(true);
+
+    // Play the first word after user interaction
+    setTimeout(() => {
+      const audio = new Audio(`/audio/${randomTarget}.mp3`);
+      audio.play().catch((error) => console.log('Audio play failed:', error));
+    }, 500);
+  };
 
   // Handle image selection
   const handleImageClick = (selectedWord) => {
@@ -60,14 +77,23 @@ const WordGame = () => {
     }
   };
 
+  if (!gameStarted)
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <button onClick={startGame} className="bg-green-500 text-white px-8 py-4 rounded-full text-2xl font-semibold hover:bg-green-600 transition-colors">
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Score Display */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-purple-600">Score: {score}</h2>
       </div>
 
-      {/* Game Grid */}
       <div className="flex justify-center">
         <div className="grid grid-cols-2 gap-5 md:gap-10 mb-8">
           {currentWords.map((word, index) => (
@@ -83,7 +109,6 @@ const WordGame = () => {
           ))}
         </div>
       </div>
-      {/* Replay Button */}
       <div className="text-center">
         <button
           onClick={replayAudio}
@@ -93,7 +118,6 @@ const WordGame = () => {
         </button>
       </div>
 
-      {/* Feedback Message */}
       {showFeedback && (
         <div className={`fixed inset-x-0 top-4 mx-auto w-64 p-4 rounded-lg text-center text-white text-2xl font-bold ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}>
           {isCorrect ? '✨ Correct! ✨' : '❌ Try Again! ❌'}
