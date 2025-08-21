@@ -7,7 +7,6 @@ const WordGame = () => {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [replayAvailable, setReplayAvailable] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
 
   // Function to get 4 random words
@@ -23,7 +22,6 @@ const WordGame = () => {
     const randomTarget = selectedWords[Math.floor(Math.random() * selectedWords.length)];
     setTargetWord(randomTarget);
     setShowFeedback(false);
-    setReplayAvailable(true); // Reset replay availability for new round
 
     if (gameStarted) {
       // Play audio only if game has started (user has interacted)
@@ -41,7 +39,6 @@ const WordGame = () => {
     setCurrentWords(selectedWords);
     setTargetWord(randomTarget);
     setShowFeedback(false);
-    setReplayAvailable(true);
     setGameStarted(true);
 
     // Play the first word after user interaction
@@ -53,7 +50,6 @@ const WordGame = () => {
 
   // Handle image selection
   const handleImageClick = (selectedWord) => {
-    setReplayAvailable(false);
     const correct = selectedWord === targetWord;
     setIsCorrect(correct);
     setShowFeedback(true);
@@ -70,10 +66,9 @@ const WordGame = () => {
 
   // Function to replay audio
   const replayAudio = () => {
-    if (targetWord && replayAvailable) {
+    if (targetWord) {
       const audio = new Audio(`audio/${targetWord}.mp3`);
       audio.play();
-      setReplayAvailable(false); // Use up the replay
     }
   };
 
@@ -112,8 +107,7 @@ const WordGame = () => {
       <div className="text-center">
         <button
           onClick={replayAudio}
-          disabled={!replayAvailable}
-          className={`px-6 py-3 rounded-full text-xl font-semibold transition-colors ${replayAvailable ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>
+          className='px-6 py-3 rounded-full text-xl font-semibold transition-colors bg-blue-500 text-white hover:bg-blue-600'>
           🔊 Listen Again
         </button>
       </div>
